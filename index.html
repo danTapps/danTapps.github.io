@@ -1,1 +1,182 @@
-"Hello World" 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Homebridge Hubitat MakerAPI Plugin</title>
+    <style>
+    * { font-family:tahoma; font-size:12px; padding:0px;margin:0px;}
+    p { line-height:18px; }
+    div { width:95%; margin-left:auto; margin-right:auto;}
+    #content { padding:5px; background:#ddd; border-radius:5px;
+        overflow-y: scroll; border:1px solid #CCC;
+        margin-top:10px; height: 500px;
+    }
+    #status { width:95%;display:block;float:left;margin-top:15px; }
+    #jsonTree ul { list-style: none; margin: 5px; padding: 0; cursor: default; }
+
+    #jsonTree li { list-style: none; padding-left: 14px; }
+
+    #jsonTree li.expandable { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADxSURBVHjafFBLaoRAFKzE9gfiFTyEF8gcYEAIZOUJcpdsA24CA+6yGGEO4NqtR3AlBHdG2h+mX82HyWYePLr6VTVV/Z6yLHuxbbv0PA+u68JxHEhN04RxHKG1xjzPO7UsSxnHMcmu60hKBUGAKIqIq6oqlVHLCw6GYUCSJMRFUSAMQ2LhlVi0bUsrDlfcrJumYRTBSqz6vkeappiMSF+EyesbHAvI85xxKJT++cW/0uc0uPIUruuK78MniX36zvOUn+9KKQqfxd+sB77vM7RkZBssM+GY8f7X27bh+PVBbFnWbc5fmz3u6rp+uHDR/AkwAGqHn+ZepzDiAAAAAElFTkSuQmCC); background-repeat: no-repeat; background-position: 0 5px; cursor: pointer; }
+
+    #jsonTree li.expanded { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACYSURBVHjajJA7CoMhEIQ3sD7u4wXy38NzBeyFXCGdta0HSG2XxsIn5F9DOiMZ2Go+mXEuxpgrY8xJKUEIAZxzINVaoZQCOWdorR3Ye3dKKdjJe+/wpOnFFiQfKSLGOKNWoirkIfVIKYHWeglaa2fXCdI9X+vYrz/BMQY87rcliIgfkPLPeeb90uz496/PHY8QwnZwYt4CDACMsHBjtyPgCAAAAABJRU5ErkJggg==); }
+  </style>
+  </head>
+  <body>
+    <div id="content"></div>
+    <div>
+      <span id="status">Connecting...</span>
+    </div>
+    <div>
+      <input type="button" value="Download Log File" id="download">
+      <input type="button" value="Enable Debug Mode" id="debugOn">
+      <input type="button" value="Disable Debug Mode" id="debugOff">
+      <input type="button" value="Dump attributes" id="dump">
+    </div>
+    <div id="placeholder" />
+    <div>
+    <pre><br><br>Current Configuration:<br>
+    </pre>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+function JsonTreeBuilder() {
+
+    this.build = function (jsonDoc) {
+        // build ul for the json
+        var tree = generateTree(jsonDoc);
+        // and make it expandable/collapsible
+        activateTree(tree);
+
+        // wrap with container and return
+        return $('<div id="jsonTree"/>').append(tree);
+    };
+
+    var generateTree = function (data) {
+        if (typeof (data) == 'object' && data != null) {
+            var ul = $('<ul>');
+            for (var i in data) {
+                var li = $('<li>');
+                ul.append(li.text(i).append(generateTree(data[i])));
+            }
+            return ul;
+        } else {
+            var v = (data == undefined) ? '[empty]' : data;
+            var textNode = document.createTextNode(' : ' + v);
+            return textNode;
+        }
+    };
+
+    var activateTree = function (tree) {
+        // find every ul that is child of li and make the li (the parent) expandable so it will be able to hide/show the ul (the content) by click
+        $('li > ul', tree).each(function () {
+            var innerUlContent = $(this);
+            var parent = innerUlContent.parent('li');
+            parent.addClass('expandable');
+            parent.click(function () {
+                $(this).toggleClass('expanded');
+                innerUlContent.slideToggle('fast');
+            });
+
+            // prevent li clicks to propagate upper than the container ul
+            innerUlContent.click(function (event) {
+                event.stopPropagation();
+            });
+        });
+
+        // start with the tree collapsed.
+        $('ul', tree).hide();
+    };
+}
+</script>
+<script>
+$(function () {
+  "use strict";
+  // for better performance - to avoid searching in DOM
+  var content = $('#content');
+  var status = $('#status');
+
+  // my color assigned by the server
+  var myColor = false;
+  // my name sent to the server
+  var myName = false;
+  // if user is running mozilla then use it's built-in WebSocket
+  window.WebSocket = window.WebSocket || window.MozWebSocket;
+  // if browser doesn't support WebSocket, just show
+  // some notification and exit
+  if (!window.WebSocket) {
+    content.html($('<p>',
+      { text:'Sorry, but your browser does not support WebSocket.'}
+    ));
+    $('span').hide();
+    return;
+  }
+  // open connection
+
+/*
+  var connection = new WebSocket('ws://` + platform.local_ip + ':' + platform.local_port + `');
+  connection.onopen = function () {
+    // first we want users to enter their names
+    status.text('Connected to logging');
+  };
+  connection.onerror = function (error) {
+    // just in there were some problems with connection...
+    content.html($('<p>', {
+      text: 'Sorry, but there is some problem with your '
+         + 'connection or the server is down.'
+    }));
+  };
+  connection.onclose = function (error) {
+    // just in there were some problems with connection...
+    content.html($('<p>', {
+      text: 'Sorry, but there is some problem with your '
+         + 'connection or the server is down.'
+    }));
+  };
+  // most important part - incoming messages
+  connection.onmessage = function (message) {
+    content.append('<p>' + message.data + '</p>');
+    var elem = document.getElementById('content');
+    elem.scrollTop = elem.scrollHeight;
+       console.log('elem.scrollHeight', elem.scrollHeight);
+      return;
+  };
+*/
+  function sendAction(inAction) {
+     $.ajax({url: "http://` + platform.local_ip + ':' + platform.local_port + `/action/" + inAction , success: function(result){
+    }});
+  }
+  $("#download").click(function(){
+    var href = 'http://` + platform.local_ip + ':' + platform.local_port + `/downloadLog';
+    window.location.href = href;
+  });
+  $("#debugOn").click(function(){
+    sendAction('debugOn');
+  });
+  $("#debugOff").click(function(){
+    sendAction('debugOff');
+  });
+  $("#dump").click(function(){
+    sendAction('dump');
+  });
+  $(document).ready(function () {
+/*
+        var treeBuilder = new JsonTreeBuilder();
+        var tree = treeBuilder.build(JSON.parse('` + JSON.stringify(platform.config) + `'));
+        $('div#placeholder').append(tree);
+*/
+    });
+
+  /**
+   * This method is optional. If the server wasn't able to
+   * respond to the in 3 seconds then show some error message
+   * to notify the user that something is wrong.
+   
+  setInterval(function() {
+    if (connection.readyState !== 1) {
+      status.text('Error');
+    }
+  }, 3000);*/
+});
+</script>
+  </body>
+</html>
