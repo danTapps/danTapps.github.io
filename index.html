@@ -4,435 +4,351 @@
     <meta charset="utf-8">
     <title>Homebridge Hubitat Configuration Tool</title>
     <style>
-    body { background-color: DimGray ; }
-    * { font-family:"Lucida Console"; font-size:12px; padding:0px;margin:0px;}
-    p { line-height:18px; }
-    div { width:95%; margin-left:auto; margin-right:auto;}
-    #content { padding:5px; background:#282923; border-radius:5px;
-        overflow-y: scroll; border:1px solid #CCC;
-        margin-top:10px; height: 500px; font-family: "Lucida Console";
-    }
-    #status { width:95%;display:block;float:left;margin-top:15px; }
-    #jsonTree ul { list-style: none; margin: 5px; padding: 0; cursor: default; }
-
-    #jsonTree li { list-style: none; padding-left: 14px; }
-	pre { -moz-tab-size:    4;  -o-tab-size:      4;  tab-size:         4;  }
-
-    #jsonTree li.expandable { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADxSURBVHjafFBLaoRAFKzE9gfiFTyEF8gcYEAIZOUJcpdsA24CA+6yGGEO4NqtR3AlBHdG2h+mX82HyWYePLr6VTVV/Z6yLHuxbbv0PA+u68JxHEhN04RxHKG1xjzPO7UsSxnHMcmu60hKBUGAKIqIq6oqlVHLCw6GYUCSJMRFUSAMQ2LhlVi0bUsrDlfcrJumYRTBSqz6vkeappiMSF+EyesbHAvI85xxKJT++cW/0uc0uPIUruuK78MniX36zvOUn+9KKQqfxd+sB77vM7RkZBssM+GY8f7X27bh+PVBbFnWbc5fmz3u6rp+uHDR/AkwAGqHn+ZepzDiAAAAAElFTkSuQmCC); background-repeat: no-repeat; background-position: 0 5px; cursor: pointer; }
-
-    #jsonTree li.expanded { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACYSURBVHjajJA7CoMhEIQ3sD7u4wXy38NzBeyFXCGdta0HSG2XxsIn5F9DOiMZ2Go+mXEuxpgrY8xJKUEIAZxzINVaoZQCOWdorR3Ye3dKKdjJe+/wpOnFFiQfKSLGOKNWoirkIfVIKYHWeglaa2fXCdI9X+vYrz/BMQY87rcliIgfkPLPeeb90uz496/PHY8QwnZwYt4CDACMsHBjtyPgCAAAAABJRU5ErkJggg==); }
+	    body { background-color: DimGray ; }
+	    * { font-family:"Lucida Console"; font-size:12px; padding:0px;margin:0px;}
+	    p { line-height:18px; }
+	    div { width:95%; margin-left:auto; margin-right:auto;}
+	    #content { padding:5px; background:#282923; border-radius:5px;
+	        overflow-y: scroll; border:1px solid #CCC;
+	        margin-top:10px; height: 500px; font-family: "Lucida Console";
+	    }    
   </style>
   </head>
   <body>
     <br/>
     <div style="background-color:red">
-    <font color=yellow>Note: This tool will always create a new random "username" and "pin" in the bridge section for homebridge. Do <b>NOT</b> change these values in your config.json if you have an already running homebridge instance. You will destroy your HomeKit configuration if you do so.</font></div>
+    	<font color=yellow>
+    		Note: This tool will always create a new random "username" and "pin" in the bridge section for homebridge. Do <b>NOT</b> change these values in your config.json if you have an already running homebridge instance. You will destroy your HomeKit configuration if you do so.
+    	</font>
+    </div>
     <br/><br/>
     <div id="config">
-		<label>IP Address of your Homebridge Server:</label><input type="text" id="homebridgeIP">  <br/>
+		<label>IP Address of your Homebridge Server:</label><input type="text" id="homebridgeIP"><br/>
 		<font color=lawngreen>
-		<input type="checkbox" id="makerAPI"> Add MakerAPI Config? <br/>
-		<div id="makerconfig">
-
-			<label>MakerAPI URL:</label>
-			<input type="text" id="makerAPIURL" size="80"><br/>
-			<div>
-			Note: Just copy the first example URL in MakerAPI in here to auto-fill your configuration<br>
-			<img src="maker.PNG" width="600">
-			</div> 
-			&emsp;<input type="checkbox" id="hsmMaker"/> HSM Enabled? <br/>
-        	&emsp;<input type="checkbox" id="modesMaker"/> Modes Enabled? <br/>
-        	&emsp;<input type="checkbox" id="attribute_filterMaker"/> Add Attribute Filter example<br/>
-        	&emsp;<input type="checkbox" id="capability_filterMaker"/> Add Capability Filter example<br/>
-    	</div>
+			<input type="checkbox" id="makerAPI"> Add MakerAPI Config? <br/>
+			<div id="makerconfig">
+				<label>MakerAPI URL:</label>
+				<input type="text" id="makerAPIURL" size="80"><br/>
+				<div>
+					Note: Just copy the first example URL in MakerAPI in here to auto-fill your configuration<br>
+				<img src="maker.PNG" width="600"/>
+				</div> 
+				&emsp;<input type="checkbox" id="hsmMaker"/> HSM Enabled? <br/>
+	        	&emsp;<input type="checkbox" id="modesMaker"/> Modes Enabled? <br/>
+	        	&emsp;<input type="checkbox" id="attribute_filterMaker"/> Add Attribute Filter example<br/>
+	        	&emsp;<input type="checkbox" id="capability_filterMaker"/> Add Capability Filter example<br/>
+    		</div>
     	</font>
     	<font color=orange>
-
-    	<input type="checkbox" id="hubconnect"> Add HubConnect Config? <br/>
-		<div id="hubconnectconfig">
-			&emsp;<label>HubConnect Key:</label><input type="text" id="hubConnectKey" size="80"><br/>
-			<div> 
-			Note: Enter the Connection Key your that was provided in the HUbConnect Server Instance<br>
-			<img src="hubconnect.PNG" width="600">
-			</div> 
-			&emsp;<input type="checkbox" id="hsmHubConnect"/> HSM Enabled? <br/>
-        	&emsp;<input type="checkbox" id="modesHubConnect"/> Modes Enabled? <br/>
-        	&emsp;<input type="checkbox" id="attribute_filterHubConnect"/> Add Attribute Filter example<br/>
-        	&emsp;<input type="checkbox" id="capability_filterHubConnect"/> Add Capability Filter example<br/>
-    	</div>
+	    	<input type="checkbox" id="hubconnect"> Add HubConnect Config? <br/>
+			<div id="hubconnectconfig">
+				&emsp;<label>HubConnect Key:</label><input type="text" id="hubConnectKey" size="80"><br/>
+				<div> 
+					Note: Enter the Connection Key your that was provided in the HUbConnect Server Instance<br>
+					<img src="hubconnect.PNG" width="600"/>
+				</div> 
+				&emsp;<input type="checkbox" id="hsmHubConnect"/> HSM Enabled? <br/>
+	        	&emsp;<input type="checkbox" id="modesHubConnect"/> Modes Enabled? <br/>
+	        	&emsp;<input type="checkbox" id="attribute_filterHubConnect"/> Add Attribute Filter example<br/>
+	        	&emsp;<input type="checkbox" id="capability_filterHubConnect"/> Add Capability Filter example<br/>
+	    	</div>
     	</font>
     </div>
     <div id="content"></div>
-   
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>
-function parseURL(url) {
-    var parser = document.createElement('a'),
-        searchObject = {},
-        queries, split, i;
-    // Let the browser do the work
-    parser.href = url;
-    // Convert query string to object
-    queries = parser.search.replace(/^\?/, '').split('&');
-    for( i = 0; i < queries.length; i++ ) {
-        split = queries[i].split('=');
-        searchObject[split[0]] = split[1];
-    }
-    return {
-        protocol: parser.protocol,
-        host: parser.host,
-        hostname: parser.hostname,
-        port: parser.port,
-        pathname: parser.pathname,
-        search: parser.search,
-        searchObject: searchObject,
-        hash: parser.hash
-    };
-}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+	function parseURL(url) {
+		var parser = document.createElement('a'),
+		searchObject = {},
+		queries, split, i;
+		// Let the browser do the work
+		parser.href = url;
+		// Convert query string to object
+		queries = parser.search.replace(/^\?/, '').split('&');
+		for( i = 0; i < queries.length; i++ ) {
+			split = queries[i].split('=');
+			searchObject[split[0]] = split[1];
+		}
+		return {
+			protocol: parser.protocol,
+			host: parser.host,
+			hostname: parser.hostname,
+			port: parser.port,
+			pathname: parser.pathname,
+			search: parser.search,
+			searchObject: searchObject,
+			hash: parser.hash
+		};
+	}
 
-function makeusername() {
-   var result           = '';
-   var characters       = 'ABCDEF0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < 12; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   result = result.replace(/(.{2})/g, "$1:");
-   result = result.slice(0, -1);
-   return result;
-}
-function makepin() {
-   var result           = '';
-   var characters       = '123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < 3; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   result +='-';
-   for ( var i = 0; i < 2; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   result +='-';
-   for ( var i = 0; i < 3; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-
-   return result;
-}
-function JsonTreeBuilder() {
-
-    this.build = function (jsonDoc) {
-        // build ul for the json
-        var tree = generateTree(jsonDoc);
-        // and make it expandable/collapsible
-        activateTree(tree);
-
-        // wrap with container and return
-        return $('<div id="jsonTree"/>').append(tree);
-    };
-
-    var generateTree = function (data) {
-        if (typeof (data) == 'object' && data != null) {
-            var ul = $('<ul>');
-            for (var i in data) {
-                var li = $('<li>');
-                ul.append(li.text(i).append(generateTree(data[i])));
-            }
-            return ul;
-        } else {
-            var v = (data == undefined) ? '[empty]' : data;
-            var textNode = document.createTextNode(' : ' + v);
-            return textNode;
-        }
-    };
-
-    var activateTree = function (tree) {
-        // find every ul that is child of li and make the li (the parent) expandable so it will be able to hide/show the ul (the content) by click
-        $('li > ul', tree).each(function () {
-            var innerUlContent = $(this);
-            var parent = innerUlContent.parent('li');
-            parent.addClass('expandable');
-            parent.click(function () {
-                $(this).toggleClass('expanded');
-                innerUlContent.slideToggle('fast');
-            });
-
-            // prevent li clicks to propagate upper than the container ul
-            innerUlContent.click(function (event) {
-                event.stopPropagation();
-            });
-        });
-
-        // start with the tree collapsed.
-        $('ul', tree).hide();
-    };
-}
+	function makeusername() {
+		var result           = '';
+		var characters       = 'ABCDEF0123456789';
+		var charactersLength = characters.length;
+		for ( var i = 0; i < 12; i++ ) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+		result = result.replace(/(.{2})/g, "$1:");
+		result = result.slice(0, -1);
+		return result;
+	}
+	function makepin() {
+		var result           = '';
+		var characters       = '123456789';
+		var charactersLength = characters.length;
+		for ( var i = 0; i < 3; i++ ) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+		result +='-';
+		for ( var i = 0; i < 2; i++ ) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+		result +='-';
+		for ( var i = 0; i < 3; i++ ) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+		return result;
+	}
 </script>
 <script>
 $(function () {
-  "use strict";
-  // for better performance - to avoid searching in DOM
-  var content = $('#content');
-  var status = $('#status');
-  var hsmMaker = $('#hsmMaker');
-  var modesMaker = $('#modesMaker');
-  var attribute_filterMaker = $('#attribute_filterMaker');
-  var capability_filterMaker = $('#capability_filterMaker');
-  var makerAPI = $('#makerAPI');
-  var makerconfig = $('#makerconfig');
-  var homebridgeIP = $('#homebridgeIP');
-  var hubconnect = $('#hubconnect');
-  var hubconnectconfig = $('#hubconnectconfig');
-  var hsmHubConnect = $('#hsmHubConnect');
-  var modesHubConnect = $('#modesHubConnect');
-  var attribute_filterHubConnect = $('#attribute_filterHubConnect');
-  var capability_filterHubConnect = $('#capability_filterHubConnect');
-  var hubConnectKey = $('#hubConnectKey');
-  var makerAPIURL = $('#makerAPIURL');
-  var userName = makeusername();
-  var pin = makepin();
-  makerconfig.hide();
-  hubconnectconfig.hide();
+	"use strict";
+	// for better performance - to avoid searching in DOM
+	var content = $('#content');
+	var hsmMaker = $('#hsmMaker');
+	var modesMaker = $('#modesMaker');
+	var attribute_filterMaker = $('#attribute_filterMaker');
+	var capability_filterMaker = $('#capability_filterMaker');
+	var makerAPI = $('#makerAPI');
+	var makerconfig = $('#makerconfig');
+	var homebridgeIP = $('#homebridgeIP');
+	var hubconnect = $('#hubconnect');
+	var hubconnectconfig = $('#hubconnectconfig');
+	var hsmHubConnect = $('#hsmHubConnect');
+	var modesHubConnect = $('#modesHubConnect');
+	var attribute_filterHubConnect = $('#attribute_filterHubConnect');
+	var capability_filterHubConnect = $('#capability_filterHubConnect');
+	var hubConnectKey = $('#hubConnectKey');
+	var makerAPIURL = $('#makerAPIURL');
+	var userName = makeusername();
+	var pin = makepin();
+	makerconfig.hide();
+	hubconnectconfig.hide();
 
-  function tab() {
-  	//return "&nbsp;&nbsp;&nbsp;&nbsp;";
-  	return "&emsp;";
-  }
-  function addLine(line) {
-  	content.append(line+ '<br/>');
-  }
-  function buildMain() {
-  	content.html('<pre>');
-  	addLineMain('{');
-  	addLineMain(tab() + '"bridge": {');
-  	addLineMain(tab() + tab() + '"name": "Homebridge",');
-  	addLineMain(tab() + tab() + '"username": "' + userName + '",');
-  	addLineMain(tab() + tab() + '"pin": "' + pin + '"');
-  	addLineMain(tab() + '},');
-  	addLineMain(tab() + '"mdns": {');
-  	addLineMain(tab() + tab() + '"interface": "' + homebridgeIP.val() + '"');
-  	addLineMain(tab() + '},');
-  	addLineMain(tab() + '"platforms": [');
+	function tab() {
+		return "&emsp;";
+	}
+	function addLine(line) {
+		content.append(line+ '<br/>');
+	}
+	function buildMain() {
+		content.html('<pre>');
+		addLineMain('{');
+		addLineMain(tab() + '"bridge": {');
+		addLineMain(tab() + tab() + '"name": "Homebridge",');
+		addLineMain(tab() + tab() + '"username": "' + userName + '",');
+		addLineMain(tab() + tab() + '"pin": "' + pin + '"');
+		addLineMain(tab() + '},');
+		addLineMain(tab() + '"mdns": {');
+		addLineMain(tab() + tab() + '"interface": "' + homebridgeIP.val() + '"');
+		addLineMain(tab() + '},');
+		addLineMain(tab() + '"platforms": [');
 
-  }
-  function addLineMain(line) {
-  	addLine('<font color=white>' + line);
-  }
-  function addLineMaker(line) {
-  	addLine('<font color=lawngreen>' + line);
-  }
-  function addLineHubConnect(line) {
-  	addLine('<font color=orange>' + line);
-  }
-  function buildMakerAPI() {
-  	var parsedURL = parseURL(makerAPIURL.val());
-  	var pathname = parsedURL.pathname.split('/');
-  	var access_token = '"<font color="red">access_token</font>"';
-  	var app_url = '"<font color="red">app_url</font>"';
-  	if ((parsedURL.searchObject.access_token) && (makerAPIURL.val().length > 0))
-  		access_token = '"' + parsedURL.searchObject.access_token + '"';
-  	if ((pathname.length > 4) && (makerAPIURL.val().length > 0))
-  	{
-  		app_url = parsedURL.protocol;
-  		app_url += '//';
-  		app_url += parsedURL.hostname;
-  		for (var i = 0; i < 4; i++) {
-  			if (pathname[i].length > 0)
-  				app_url += '/' + pathname[i];
-  		}
-  	}
-  	addLineMaker(tab() + tab() + '{');
-  	addLineMaker(tab() + tab() + tab() + '"platform": "Hubitat-MakerAPI",');
-  	addLineMaker(tab() + tab() + tab() + '"app_url": ' + app_url + ',');
-  	addLineMaker(tab() + tab() + tab() + '"access_token": ' + access_token + ',');
-  	addLineMaker(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
-  	addLineMaker(tab() + tab() + tab() + '"local_port": 20010,');
-  	//addLine(tab() + tab() + tab() + '"programmable_buttons": "[ "125" ]",');
-  	if(modesMaker.is(':checked'))
-	  	addLineMaker(tab() + tab() + tab() + '"mode_switches": "true",');
-  	if(hsmMaker.is(':checked'))
-		addLineMaker(tab() + tab() + tab() + '"hsm": "true",');
-	
-    
-    if (attribute_filterMaker.is(':checked')) {
-		addLineMaker(tab() + tab() + tab() + '"excluded_attributes" : {');
-		addLineMaker(tab() + tab() + tab() + tab() + '"123" : [ "switch", "power" ],');
-		addLineMaker(tab() + tab() + tab() + tab() + '"321" : [ "humidity" ]');
-    	addLineMaker(tab() + tab() + tab() + '},');
-    }
-    if (capability_filterMaker.is(':checked')) {
-    	addLineMaker(tab() + tab() + tab() + '"excluded_capabilities": {');
-		addLineMaker(tab() + tab() + tab() + tab() + '"12" : [ "thermostat" ]');
-    	addLineMaker(tab() + tab() + tab() + '},');
-    }
-    addLineMaker(tab() + tab() + tab() + '"debug": false,');
+	}
+	function addLineMain(line) {
+		addLine('<font color=white>' + line);
+	}
+	function addLineMaker(line) {
+		addLine('<font color=lawngreen>' + line);
+	}
+	function addLineHubConnect(line) {
+		addLine('<font color=orange>' + line);
+	}
+	function buildMakerAPI() {
+		var parsedURL = parseURL(makerAPIURL.val());
+		var pathname = parsedURL.pathname.split('/');
+		var access_token = '"<font color="red">access_token</font>"';
+		var app_url = '"<font color="red">app_url</font>"';
+		if ((parsedURL.searchObject.access_token) && (makerAPIURL.val().length > 0))
+			access_token = '"' + parsedURL.searchObject.access_token + '"';
+		if ((pathname.length > 4) && (makerAPIURL.val().length > 0)) {
+			app_url = parsedURL.protocol;
+			app_url += '//';
+			app_url += parsedURL.hostname;
+			for (var i = 0; i < 4; i++) {
+				if (pathname[i].length > 0)
+					app_url += '/' + pathname[i];
+			}
+		}
+		addLineMaker(tab() + tab() + '{');
+		addLineMaker(tab() + tab() + tab() + '"platform": "Hubitat-MakerAPI",');
+		addLineMaker(tab() + tab() + tab() + '"app_url": ' + app_url + ',');
+		addLineMaker(tab() + tab() + tab() + '"access_token": ' + access_token + ',');
+		addLineMaker(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
+		addLineMaker(tab() + tab() + tab() + '"local_port": 20010,');
 
-	addLineMaker(tab() + tab() + tab() + '"logFile": {');
-	addLineMaker(tab() + tab() + tab() + tab() + '"enabled": true,');
-	addLineMaker(tab() + tab() + tab() + tab() + '"path": "",');
-	addLineMaker(tab() + tab() + tab() + tab() + '"file": "",');
-	addLineMaker(tab() + tab() + tab() + tab() + '"compress": true,');
-	addLineMaker(tab() + tab() + tab() + tab() + '"keep": 5,');
-	addLineMaker(tab() + tab() + tab() + tab() + '"size": "10m"');
-	addLineMaker(tab() + tab() + tab() + '}');
-  }
+		if(modesMaker.is(':checked'))
+			addLineMaker(tab() + tab() + tab() + '"mode_switches": "true",');
+		if(hsmMaker.is(':checked'))
+			addLineMaker(tab() + tab() + tab() + '"hsm": "true",');
 
-  function buildHubConnect() {
-  	var hubConnectKeyValue = '"<font color="red">hubConnectKey</font>"';
-  	if (hubConnectKey.val().length > 0)
-  		hubConnectKeyValue = '"' + hubConnectKey.val() + '"';
 
-  	addLineHubConnect(tab() + tab() + '{');
-  	addLineHubConnect(tab() + tab() + tab() + '"platform": "Hubitat-HubConnect",');
-  	addLineHubConnect(tab() + tab() + tab() + '"hubconnect_key": ' + hubConnectKeyValue + ',');
-  	addLineHubConnect(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
-  	addLineHubConnect(tab() + tab() + tab() + '"local_port": 20009,');
-  	if(modesHubConnect.is(':checked'))
-	  	addLineHubConnect(tab() + tab() + tab() + '"mode_switches": "true",');
-  	if(hsmHubConnect.is(':checked'))
-		addLineHubConnect(tab() + tab() + tab() + '"hsm": "true",');
-	
-    
-    if (attribute_filterHubConnect.is(':checked')) {
-		addLineHubConnect(tab() + tab() + tab() + '"excluded_attributes" : {');
-		addLineHubConnect(tab() + tab() + tab() + tab() + '"123" : [ "switch", "power" ],');
-		addLineHubConnect(tab() + tab() + tab() + tab() + '"321" : [ "humidity" ]');
-    	addLineHubConnect(tab() + tab() + tab() + '},');
-    }
-    if (capability_filterHubConnect.is(':checked')) {
-    	addLineHubConnect(tab() + tab() + tab() + '"excluded_capabilities": {');
-		addLineHubConnect(tab() + tab() + tab() + tab() + '"12" : [ "thermostat" ]');
-    	addLineHubConnect(tab() + tab() + tab() + '},');
-    }
-    addLineHubConnect(tab() + tab() + tab() + '"debug": false,');
+		if (attribute_filterMaker.is(':checked')) {
+			addLineMaker(tab() + tab() + tab() + '"excluded_attributes" : {');
+			addLineMaker(tab() + tab() + tab() + tab() + '"123" : [ "switch", "power" ],');
+			addLineMaker(tab() + tab() + tab() + tab() + '"321" : [ "humidity" ]');
+			addLineMaker(tab() + tab() + tab() + '},');
+		}
+		if (capability_filterMaker.is(':checked')) {
+			addLineMaker(tab() + tab() + tab() + '"excluded_capabilities": {');
+			addLineMaker(tab() + tab() + tab() + tab() + '"12" : [ "thermostat" ]');
+			addLineMaker(tab() + tab() + tab() + '},');
+		}
+		addLineMaker(tab() + tab() + tab() + '"debug": false,');
 
-	addLineHubConnect(tab() + tab() + tab() + '"logFile": {');
-	addLineHubConnect(tab() + tab() + tab() + tab() + '"enabled": true,');
-	addLineHubConnect(tab() + tab() + tab() + tab() + '"path": "",');
-	addLineHubConnect(tab() + tab() + tab() + tab() + '"file": "",');
-	addLineHubConnect(tab() + tab() + tab() + tab() + '"compress": true,');
-	addLineHubConnect(tab() + tab() + tab() + tab() + '"keep": 5,');
-	addLineHubConnect(tab() + tab() + tab() + tab() + '"size": "10m"');
-	addLineHubConnect(tab() + tab() + tab() + '}');
-  	addLineHubConnect(tab() + tab() + '}')
-  }
-  function ValidateIPaddress(ipaddress)
- {
- if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
-    return (true)  
-  }  
-  return (false)  
- }
+		addLineMaker(tab() + tab() + tab() + '"logFile": {');
+		addLineMaker(tab() + tab() + tab() + tab() + '"enabled": true,');
+		addLineMaker(tab() + tab() + tab() + tab() + '"path": "",');
+		addLineMaker(tab() + tab() + tab() + tab() + '"file": "",');
+		addLineMaker(tab() + tab() + tab() + tab() + '"compress": true,');
+		addLineMaker(tab() + tab() + tab() + tab() + '"keep": 5,');
+		addLineMaker(tab() + tab() + tab() + tab() + '"size": "10m"');
+		addLineMaker(tab() + tab() + tab() + '}');
+	}
 
-  function buildConfig() {
-  	var homebridgeIPStr = '';
-  	if (homebridgeIP.val())
-  		homebridgeIPStr = homebridgeIP.val();
-  	if (ValidateIPaddress(homebridgeIPStr) == false)
-  		content.html('<pre><font color=red>Please enter a valid IP address for your Homebridge server</font>');
-  	/*else if (hubconnect.is(':checked') && hubConnectKey.val().length == 0) {
-  		content.html('<pre><font color=red>Please enter a valid HubConnect Key</font>');
-  		
-  	}*/
-  	else {
+	function buildHubConnect() {
+		var hubConnectKeyValue = '"<font color="red">hubConnectKey</font>"';
+		if (hubConnectKey.val().length > 0)
+			hubConnectKeyValue = '"' + hubConnectKey.val() + '"';
 
-	  	buildMain();
-	  	if (makerAPI.is(':checked')) {
-	  		buildMakerAPI();
-		  	if (hubconnect.is(':checked'))
-	  			addLineMaker(tab() + tab() + '}</font><font color=white>,')
-	  		else
-	  			addLineMaker(tab() + tab() + '}</font>')
-	  	}
-	  	if (hubconnect.is(':checked')) {
-	  		buildHubConnect();
-	  	}
-	  	addLineMain(tab() + ']');
-	  	addLineMain('}</pre>');
-	  }
-  }
-  function sendAction(inAction) {
-     //$.ajax({url: "http://` + platform.local_ip + ':' + platform.local_port + `/action/" + inAction , success: function(result){
-     //}});
-  }
-  $("#download").click(function(){
-    //var href = 'http://` + platform.local_ip + ':' + platform.local_port + `/downloadLog';
-    //window.location.href = href;
-  });
-  $("#debugOn").click(function(){
-    sendAction('debugOn');
-  });
-  $("#debugOff").click(function(){
-    sendAction('debugOff');
-  });
-  $("#dump").click(function(){
-    sendAction('dump');
-  });
-  $('#hsmMaker').change(function() {
-  	buildConfig()
-  });
-  $('#modesMaker').change(function() {
-  	buildConfig()
-  });
-  $('#attribute_filterMaker').change(function() {
-  	buildConfig()
-  });
-  $('#capability_filterMaker').change(function() {
-  	buildConfig()
-  });
-  $('#hsmHubConnect').change(function() {
-  	buildConfig()
-  });
-  $('#modesHubConnect').change(function() {
-  	buildConfig()
-  });
-  $('#attribute_filterHubConnect').change(function() {
-  	buildConfig()
-  });
-  $('#capability_filterHubConnect').change(function() {
-  	buildConfig()
-  });
-  $('#makerAPI').change(function() {
-	if (makerAPI.is(':checked'))
-		makerconfig.show();
-	else
-		makerconfig.hide();
-	buildConfig()
-  });
-  $('#homebridgeIP').keyup(function() {
-	buildConfig()
-  });
-  $('#hubConnectKey').keyup(function() {
-	buildConfig()
-  });
-  $('#makerAPIURL').keyup(function() {
-	buildConfig()
-  });
-  $("#makerAPIURL").bind("input propertychange", function(e){
-    buildConfig();
-  });
-  $('#hubconnect').change(function() {
-	if (hubconnect.is(':checked'))
-		hubconnectconfig.show();
-	else
-		hubconnectconfig.hide();
-	buildConfig()
-  });
-  $("#hubConnectKey").bind("input propertychange", function(e){
-    buildConfig();
-  });
-  $("#homebridgeIP").bind("input propertychange", function(e){
-    buildConfig();
-  });
-  $(document).ready(function () {
-/*
-        var treeBuilder = new JsonTreeBuilder();
-        var tree = treeBuilder.build(JSON.parse('` + JSON.stringify(platform.config) + `'));
-        $('div#placeholder').append(tree);
-*/
-    buildConfig();
-    });
+		addLineHubConnect(tab() + tab() + '{');
+		addLineHubConnect(tab() + tab() + tab() + '"platform": "Hubitat-HubConnect",');
+		addLineHubConnect(tab() + tab() + tab() + '"hubconnect_key": ' + hubConnectKeyValue + ',');
+		addLineHubConnect(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
+		addLineHubConnect(tab() + tab() + tab() + '"local_port": 20009,');
+		if(modesHubConnect.is(':checked'))
+			addLineHubConnect(tab() + tab() + tab() + '"mode_switches": "true",');
+		if(hsmHubConnect.is(':checked'))
+			addLineHubConnect(tab() + tab() + tab() + '"hsm": "true",');
+
+
+		if (attribute_filterHubConnect.is(':checked')) {
+			addLineHubConnect(tab() + tab() + tab() + '"excluded_attributes" : {');
+			addLineHubConnect(tab() + tab() + tab() + tab() + '"123" : [ "switch", "power" ],');
+			addLineHubConnect(tab() + tab() + tab() + tab() + '"321" : [ "humidity" ]');
+			addLineHubConnect(tab() + tab() + tab() + '},');
+		}
+		if (capability_filterHubConnect.is(':checked')) {
+			addLineHubConnect(tab() + tab() + tab() + '"excluded_capabilities": {');
+			addLineHubConnect(tab() + tab() + tab() + tab() + '"12" : [ "thermostat" ]');
+			addLineHubConnect(tab() + tab() + tab() + '},');
+		}
+		addLineHubConnect(tab() + tab() + tab() + '"debug": false,');
+
+		addLineHubConnect(tab() + tab() + tab() + '"logFile": {');
+		addLineHubConnect(tab() + tab() + tab() + tab() + '"enabled": true,');
+		addLineHubConnect(tab() + tab() + tab() + tab() + '"path": "",');
+		addLineHubConnect(tab() + tab() + tab() + tab() + '"file": "",');
+		addLineHubConnect(tab() + tab() + tab() + tab() + '"compress": true,');
+		addLineHubConnect(tab() + tab() + tab() + tab() + '"keep": 5,');
+		addLineHubConnect(tab() + tab() + tab() + tab() + '"size": "10m"');
+		addLineHubConnect(tab() + tab() + tab() + '}');
+		addLineHubConnect(tab() + tab() + '}')
+	}
+	function ValidateIPaddress(ipaddress)
+	{
+		if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
+			return true;  
+		}  
+		return false;
+	}
+
+	function buildConfig() {
+		var homebridgeIPStr = '';
+		if (homebridgeIP.val())
+			homebridgeIPStr = homebridgeIP.val();
+		if (ValidateIPaddress(homebridgeIPStr) == false)
+			content.html('<pre><font color=red>Please enter a valid IP address for your Homebridge server</font>');
+		/*else if (hubconnect.is(':checked') && hubConnectKey.val().length == 0) {
+		content.html('<pre><font color=red>Please enter a valid HubConnect Key</font>');
+		}*/ 
+		else {
+			buildMain();
+			if (makerAPI.is(':checked')) {
+				buildMakerAPI();
+			if (hubconnect.is(':checked'))
+				addLineMaker(tab() + tab() + '}</font><font color=white>,')
+			else
+				addLineMaker(tab() + tab() + '}</font>')
+			}
+			if (hubconnect.is(':checked')) {
+				buildHubConnect();
+			}
+			addLineMain(tab() + ']');
+			addLineMain('}</pre>');
+		}
+	}
+
+	$('#hsmMaker').change(function() {
+		buildConfig()
+	});
+	$('#modesMaker').change(function() {
+		buildConfig()
+	});
+	$('#attribute_filterMaker').change(function() {
+		buildConfig()
+	});
+	$('#capability_filterMaker').change(function() {
+		buildConfig()
+	});
+	$('#hsmHubConnect').change(function() {
+		buildConfig()
+	});
+	$('#modesHubConnect').change(function() {
+		buildConfig()
+	});
+	$('#attribute_filterHubConnect').change(function() {
+		buildConfig()
+	});
+	$('#capability_filterHubConnect').change(function() {
+		buildConfig()
+	});
+	$('#makerAPI').change(function() {
+		if (makerAPI.is(':checked'))
+			makerconfig.show();
+		else
+			makerconfig.hide();
+		buildConfig()
+	});
+	$('#homebridgeIP').keyup(function() {
+		buildConfig()
+	});
+	$('#hubConnectKey').keyup(function() {
+		buildConfig()
+	});
+	$('#makerAPIURL').keyup(function() {
+		buildConfig()
+	});
+	$("#makerAPIURL").bind("input propertychange", function(e){
+		buildConfig();
+	});
+	$('#hubconnect').change(function() {
+		if (hubconnect.is(':checked'))
+			hubconnectconfig.show();
+		else
+			hubconnectconfig.hide();
+		buildConfig()
+	});
+	$("#hubConnectKey").bind("input propertychange", function(e){
+		buildConfig();
+	});
+	$("#homebridgeIP").bind("input propertychange", function(e){
+		buildConfig();
+	});
+	$(document).ready(function () {
+		buildConfig();
+	});
 
   /**
    * This method is optional. If the server wasn't able to
