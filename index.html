@@ -53,6 +53,9 @@
 	        	&emsp;<input type="checkbox" id="capability_filterHubConnect"/> Add Capability Filter example<br/>
 	    	</div>
     	</font>
+    	<font color=blue>
+	    	<input type="checkbox" id="anotherConfig"> Add placeholder for another homebridge plugin? <br/>
+	    </font>
     </div>
     <div id="content"></div>
     </div>
@@ -131,6 +134,7 @@ $(function () {
 	var capability_filterHubConnect = $('#capability_filterHubConnect');
 	var hubConnectKey = $('#hubConnectKey');
 	var makerAPIURL = $('#makerAPIURL');
+	var anotherConfig = $('#anotherConfig');
 	var userName = makeusername();
 	var pin = makepin();
 	makerconfig.hide();
@@ -164,6 +168,9 @@ $(function () {
 	}
 	function addLineHubConnect(line) {
 		addLine('<font color=orange>' + line);
+	}
+	function addLineAnotherPlugin(line) {
+		addLine('<font color=blue>' + line);
 	}
 	function buildMakerAPI() {
 		var parsedURL = parseURL(makerAPIURL.val());
@@ -254,7 +261,13 @@ $(function () {
 		addLineHubConnect(tab() + tab() + tab() + tab() + '"keep": 5,');
 		addLineHubConnect(tab() + tab() + tab() + tab() + '"size": "10m"');
 		addLineHubConnect(tab() + tab() + tab() + '}');
-		addLineHubConnect(tab() + tab() + '}')
+	}
+
+	function buildAnotherPlugin() {
+		addLineAnotherPlugin(tab() + tab() + '{');
+		addLineAnotherPlugin(tab() + tab() + tab() + '"description": "Add the parameters for the other plugin here"');
+		addLineAnotherPlugin(tab() + tab() + '}');
+
 	}
 	function ValidateIPaddress(ipaddress)
 	{
@@ -277,13 +290,20 @@ $(function () {
 			buildMain();
 			if (makerAPI.is(':checked')) {
 				buildMakerAPI();
-			if (hubconnect.is(':checked'))
-				addLineMaker(tab() + tab() + '}</font><font color=white>,')
-			else
-				addLineMaker(tab() + tab() + '}</font>')
+				if ((hubconnect.is(':checked')) || (anotherConfig.is(':checked')))
+					addLineMaker(tab() + tab() + '}</font><font color=white>,')
+				else
+					addLineMaker(tab() + tab() + '}</font>')
 			}
 			if (hubconnect.is(':checked')) {
 				buildHubConnect();
+				if (anotherConfig.is(':checked'))
+					addLineHubConnect(tab() + tab() + '}</font><font color=white>,')
+				else
+					addLineHubConnect(tab() + tab() + '}</font>')
+			}
+			if (anotherConfig.is(':checked')) {
+				buildAnotherPlugin();
 			}
 			addLineMain(tab() + ']');
 			addLineMain('}</pre>');
@@ -346,20 +366,12 @@ $(function () {
 	$("#homebridgeIP").bind("input propertychange", function(e){
 		buildConfig();
 	});
+	$("#anotherConfig").change(function() {
+		buildConfig();
+	});
 	$(document).ready(function () {
 		buildConfig();
 	});
-
-  /**
-   * This method is optional. If the server wasn't able to
-   * respond to the in 3 seconds then show some error message
-   * to notify the user that something is wrong.
-   
-  setInterval(function() {
-    if (connection.readyState !== 1) {
-      status.text('Error');
-    }
-  }, 3000);*/
 });
 </script>
   </body>
