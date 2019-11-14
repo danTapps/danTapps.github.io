@@ -56,7 +56,11 @@
     	<font color=blue>
 	    	<input type="checkbox" id="anotherConfig"> Add placeholder for another homebridge plugin? <br/>
 	    </font>
+	    <div>
+        	<br/><button id="copyClipboard">Copy to clipboard</button>
+        </div>
     </div>
+
     <div id="content"></div>
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -276,12 +280,13 @@ $(function () {
 		var homebridgeIPStr = '';
 		if (homebridgeIP.val())
 			homebridgeIPStr = homebridgeIP.val();
-		if (ValidateIPaddress(homebridgeIPStr) == false)
+		if (ValidateIPaddress(homebridgeIPStr) == false){
+			$('#copyClipboard').hide();
 			content.html('<pre><font color=red>Please enter a valid IP address for the computer that runs homebridge</font>');
 		/*else if (hubconnect.is(':checked') && hubConnectKey.val().length == 0) {
-		content.html('<pre><font color=red>Please enter a valid HubConnect Key</font>');
-		}*/ 
-		else {
+		content.html('<pre><font color=red>Please enter a valid HubConnect Key</font>'); */
+		} else {
+			$('#copyClipboard').show();
 			buildMain();
 			if (makerAPI.is(':checked')) {
 				buildMakerAPI();
@@ -366,6 +371,19 @@ $(function () {
 	});
 	$(document).ready(function () {
 		buildConfig();
+	});
+
+
+	$('#copyClipboard').click(function(){
+		var $temp = $("<div>");
+		$("body").append($temp);
+		$temp.attr("contenteditable", true)
+			.html($('#content').html()).select()
+			.on("focus", function() { document.execCommand('selectAll',false,null); })
+			.focus();
+			document.execCommand("copy");
+		$temp.remove();
+
 	});
 });
 </script>
