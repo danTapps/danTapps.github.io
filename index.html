@@ -195,12 +195,9 @@ $(function () {
 		addLineMaker(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
 		addLineMaker(tab() + tab() + tab() + '"local_port": 20010,');
 
-		if(modesMaker.is(':checked'))
-			addLineMaker(tab() + tab() + tab() + '"mode_switches": "true",');
-		if(hsmMaker.is(':checked'))
-			addLineMaker(tab() + tab() + tab() + '"hsm": "true",');
-
-
+		addLineMaker(tab() + tab() + tab() + '"mode_switches": ' + (modesMaker.is(':checked') ? "true" : "false") + ',');
+		addLineMaker(tab() + tab() + tab() + '"hsm": ' + (hsmMaker.is(':checked') ? "true" : "false") + ',');
+		
 		if (attribute_filterMaker.is(':checked')) {
 			addLineMaker(tab() + tab() + tab() + '"excluded_attributes" : {');
 			addLineMaker(tab() + tab() + tab() + tab() + '"123" : [ "switch", "power" ],');
@@ -234,11 +231,9 @@ $(function () {
 		addLineHubConnect(tab() + tab() + tab() + '"hubconnect_key": ' + hubConnectKeyValue + ',');
 		addLineHubConnect(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
 		addLineHubConnect(tab() + tab() + tab() + '"local_port": 20009,');
-		if(modesHubConnect.is(':checked'))
-			addLineHubConnect(tab() + tab() + tab() + '"mode_switches": "true",');
-		if(hsmHubConnect.is(':checked'))
-			addLineHubConnect(tab() + tab() + tab() + '"hsm": "true",');
 
+		addLineHubConnect(tab() + tab() + tab() + '"mode_switches": ' + (modesHubConnect.is(':checked') ? "true" : "false") + ',');
+		addLineHubConnect(tab() + tab() + tab() + '"hsm": ' + (hsmHubConnect.is(':checked') ? "true" : "false") + ',');
 
 		if (attribute_filterHubConnect.is(':checked')) {
 			addLineHubConnect(tab() + tab() + tab() + '"excluded_attributes" : {');
