@@ -23,7 +23,7 @@
     </div>
     <br/><br/>
     <div id="config">
-		<label>IP Address of your Homebridge Server:</label><input type="text" id="homebridgeIP"><br/>
+		<label>IP Address of your computer that runs homebridge:</label><input type="text" id="homebridgeIP"><br/>
 		<font color=lawngreen>
 			<input type="checkbox" id="makerAPI"> Add MakerAPI Config? <br/>
 			<div id="makerconfig">
@@ -269,7 +269,7 @@ $(function () {
 		if (homebridgeIP.val())
 			homebridgeIPStr = homebridgeIP.val();
 		if (ValidateIPaddress(homebridgeIPStr) == false)
-			content.html('<pre><font color=red>Please enter a valid IP address for your Homebridge server</font>');
+			content.html('<pre><font color=red>Please enter a valid IP address for the computer that runs homebridge</font>');
 		/*else if (hubconnect.is(':checked') && hubConnectKey.val().length == 0) {
 		content.html('<pre><font color=red>Please enter a valid HubConnect Key</font>');
 		}*/ 
