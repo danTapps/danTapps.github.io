@@ -186,13 +186,14 @@ $(function () {
 		if ((parsedURL.searchObject.access_token) && (makerAPIURL.val().length > 0))
 			access_token = '"' + parsedURL.searchObject.access_token + '"';
 		if ((pathname.length > 4) && (makerAPIURL.val().length > 0)) {
-			app_url = parsedURL.protocol;
+			app_url = '"' + parsedURL.protocol;
 			app_url += '//';
 			app_url += parsedURL.hostname;
 			for (var i = 0; i < 4; i++) {
 				if (pathname[i].length > 0)
 					app_url += '/' + pathname[i];
 			}
+			app_url += '"';
 		}
 		addLineMaker(tab() + tab() + '{');
 		addLineMaker(tab() + tab() + tab() + '"platform": "Hubitat-MakerAPI",');
