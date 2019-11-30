@@ -197,6 +197,7 @@ $(function () {
 		}
 		addLineMaker(tab() + tab() + '{');
 		addLineMaker(tab() + tab() + tab() + '"platform": "Hubitat-MakerAPI",');
+		addLineMaker(tab() + tab() + tab() + '"name": "Hubitat MakerAPI",');
 		addLineMaker(tab() + tab() + tab() + '"app_url": ' + app_url + ',');
 		addLineMaker(tab() + tab() + tab() + '"access_token": ' + access_token + ',');
 		addLineMaker(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
@@ -235,6 +236,7 @@ $(function () {
 
 		addLineHubConnect(tab() + tab() + '{');
 		addLineHubConnect(tab() + tab() + tab() + '"platform": "Hubitat-HubConnect",');
+		addLineMaker(tab() + tab() + tab() + '"name": "Hubitat HubConnect",');
 		addLineHubConnect(tab() + tab() + tab() + '"hubconnect_key": ' + hubConnectKeyValue + ',');
 		addLineHubConnect(tab() + tab() + tab() + '"local_ip": "' + homebridgeIP.val() + '",');
 		addLineHubConnect(tab() + tab() + tab() + '"local_port": 20009,');
