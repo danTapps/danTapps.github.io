@@ -23,7 +23,12 @@
     </div>
     <br/><br/>
     <div id="config">
-		<label>IP Address of your computer that runs homebridge:</label><input type="text" id="homebridgeIP"><br/><br/>
+    	<font color=White>
+			<input type="checkbox" id="hoobs"/> I need this for HOOBS? <br/><br/>
+		</font>
+		<div id="localip">
+			<label>IP Address of your computer that runs homebridge:</label><input type="text" id="homebridgeIP"><br/><br/>
+		</div>
 		<font color=lawngreen>
 			<input type="checkbox" id="makerAPI"> Add MakerAPI Config? <br/>
 			<div id="makerconfig">
@@ -139,6 +144,9 @@ $(function () {
 	var hubConnectKey = $('#hubConnectKey');
 	var makerAPIURL = $('#makerAPIURL');
 	var anotherConfig = $('#anotherConfig');
+	var hoobs = $('#hoobs');
+	var localip = $('#localip');
+
 	var userName = makeusername();
 	var pin = makepin();
 	makerconfig.hide();
@@ -282,17 +290,21 @@ $(function () {
 	}
 
 	function buildConfig() {
+
 		var homebridgeIPStr = '';
 		if (homebridgeIP.val())
 			homebridgeIPStr = homebridgeIP.val();
-		if (ValidateIPaddress(homebridgeIPStr) == false){
+		if ((ValidateIPaddress(homebridgeIPStr) == false) && hoobs.is(':checked') == false ) {
 			$('#copyClipboard').hide();
 			content.html('<pre><font color=red>Please enter a valid IP address for the computer that runs homebridge</font>');
-		/*else if (hubconnect.is(':checked') && hubConnectKey.val().length == 0) {
-		content.html('<pre><font color=red>Please enter a valid HubConnect Key</font>'); */
 		} else {
 			$('#copyClipboard').show();
-			buildMain();
+			if (hoobs.is(':checked') == true) {
+				content.html('<pre>');
+			} 
+			else {
+				buildMain();
+			}
 			if (makerAPI.is(':checked')) {
 				buildMakerAPI();
 				if ((hubconnect.is(':checked')) || (anotherConfig.is(':checked')))
@@ -310,8 +322,14 @@ $(function () {
 			if (anotherConfig.is(':checked')) {
 				buildAnotherPlugin();
 			}
-			addLineMain(tab() + ']');
-			addLineMain('}</pre>');
+			if (hoobs.is(':checked') == true) {
+				addLineMain('</pre>');
+			}
+			else 
+			{
+				addLineMain(tab() + ']');
+				addLineMain('}</pre>');
+			}
 		}
 	}
 
@@ -357,6 +375,13 @@ $(function () {
 	});
 	$("#makerAPIURL").bind("input propertychange", function(e){
 		buildConfig();
+	});
+	$('#hoobs').change(function() {
+		if (hoobs.is(':checked'))
+			localip.hide();
+		else
+			localip.show();
+		buildConfig()
 	});
 	$('#hubconnect').change(function() {
 		if (hubconnect.is(':checked'))
